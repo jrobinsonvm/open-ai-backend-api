@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openai-backend-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openai-backend-api
+  template:
+    metadata:
+      labels:
+        app: openai-backend-api
+    spec:
+      containers:
+      - name: openai-backend-api
+        image: your-registry-domain-here.com/openai-backend-api:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openai-secrets
+              key: OPENAI_API_KEY
+        - name: OPENAI_ORG_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openai-secrets
+              key: OPENAI_ORG_KEY
+        command: ["python"]
+        args: ["openai-api.py"]
